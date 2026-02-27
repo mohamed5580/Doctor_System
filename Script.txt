@@ -1,0 +1,117 @@
+
+GO
+/****** Object:  Table [dbo].[cabinet]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[cabinet](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Date] [date] NOT NULL,
+	[RevenueOfToday] [decimal](18, 2) NOT NULL,
+	[Expenses] [decimal](18, 2) NOT NULL,
+	[Profit]  AS ([RevenueOfToday]-[Expenses]) PERSISTED,
+	[cash] [decimal](18, 2) NULL,
+	[vod_cash] [decimal](18, 2) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Diseases]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Diseases](
+	[DID] [int] NOT NULL,
+	[PID] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Free_Edition]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Free_Edition](
+	[code] [varchar](35) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Patients]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Patients](
+	[PID] [int] NOT NULL,
+	[Name] [nvarchar](80) NULL,
+	[Payments] [nvarchar](80) NULL,
+	[Address] [nvarchar](255) NULL,
+	[Type] [nvarchar](80) NULL,
+	[Age] [int] NULL,
+	[Phone] [nvarchar](255) NULL,
+	[Description] [nvarchar](255) NULL,
+	[DATE] [date] NULL,
+	[Type_Examination] [nvarchar](80) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[prescription]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[prescription](
+	[PREID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](80) NULL,
+	[PID] [int] NULL,
+	[Description] [nvarchar](255) NULL,
+	[Quantity] [int] NULL,
+	[Disease] [nvarchar](80) NULL,
+	[DATE] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PREID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[WaitingList]    Script Date: 7/30/2024 11:33:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[WaitingList](
+	[WID] [int] NOT NULL,
+	[PID] [int] NULL,
+	[Illness_Type] [nvarchar](50) NULL,
+	[med] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[WID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[cabinet] ADD  DEFAULT (getdate()) FOR [Date]
+GO
+ALTER TABLE [dbo].[cabinet] ADD  DEFAULT ((0)) FOR [Expenses]
+GO
+ALTER TABLE [dbo].[Patients] ADD  DEFAULT (getdate()) FOR [DATE]
+GO
+ALTER TABLE [dbo].[Diseases]  WITH CHECK ADD FOREIGN KEY([PID])
+REFERENCES [dbo].[Patients] ([PID])
+GO
+ALTER TABLE [dbo].[WaitingList]  WITH CHECK ADD FOREIGN KEY([PID])
+REFERENCES [dbo].[Patients] ([PID])
+GO
+USE [master]
+GO
+ALTER DATABASE [Hospital] SET  READ_WRITE 
+GO
